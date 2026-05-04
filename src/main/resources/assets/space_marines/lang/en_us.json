@@ -1,0 +1,30 @@
+{
+  "item.space_marines.warhammer_helmet": "Marine Helmet",
+  "item.space_marines.warhammer_chest": "Marine Chestplate",
+  "item.space_marines.warhammer_leggings": "Marine Leggings",
+  "item.space_marines.warhammer_boot": "Marine Boots",
+
+  "item.space_marines.marine_armor_smithing_template": "Marine Upgrade Smithing Template",
+  "item.space_marines.royal_zealot_trim_template": "Royal Zealot Armor Trim Smithing Template",
+  "item.space_marines.proto_suit_trim_template": "Prototype Armor Trim Smithing Template",
+  "item.space_marines.infernal_chaos_trim_template": "Infernal Chaos Armor Trim Smithing Template",
+  "item.space_marines.holy_crusader_trim_template": "Holy Crusader Armor Trim Smithing Template",
+  "item.space_marines.silver_skull_trim_template": "Silver Skulls Armor Trim Smithing Template",
+
+  "item.space_marines.ceramite_ingot": "Ceramite Ingot",
+
+  "itemGroup.warhammer_tab": "Space Marines",
+  "factions.decrip": "Trim:",
+  "factions.ROYAL_ZEALOT": "Royal Zealot",
+  "factions.SILVER_SKULL": "Silver Skulls",
+  "factions.PROTO_SUIT": "Prototype MK II",
+  "factions.INFERNAL_CHAOS": "Infernal Chaos",
+  "factions.NONE": "Holy Crusader",
+
+  "factions.null": "Holy Crusader",
+  "factions.proto_suit": "Prototype MK II",
+  "factions.royal_zealot": "Royal Zealot",
+  "factions.silver_skull": "Silver Skulls",
+  "factions.infernal_chaos": "Infernal Chaos"
+
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "#I#",
+    "#g#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:nether_brick"
+    },
+    "I": {
+      "item": "space_marines:marine_armor_smithing_template"
+    },
+    "g": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "space_marines:infernal_chaos_trim_template",
+    "count": 1
+  }
+}

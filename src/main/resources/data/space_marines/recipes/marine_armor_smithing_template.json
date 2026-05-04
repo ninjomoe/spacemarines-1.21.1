@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iQi",
+    "QIQ",
+    "QQQ"
+  ],
+  "key": {
+    "i": {
+      "item": "space_marines:ceramite_ingot"
+    },
+    "Q": {
+      "item": "minecraft:quartz"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    }
+  },
+  "result": {
+    "item": "space_marines:marine_armor_smithing_template",
+    "count": 1
+  }
+}

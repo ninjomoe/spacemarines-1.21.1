@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "#I#",
+    "#g#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:copper_ingot"
+    },
+    "I": {
+      "item": "space_marines:marine_armor_smithing_template"
+    },
+    "g": {
+      "item": "minecraft:bone"
+    }
+  },
+  "result": {
+    "item": "space_marines:proto_suit_trim_template",
+    "count": 1
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "#I#",
+    "#g#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:gold_ingot"
+    },
+    "I": {
+      "item": "space_marines:marine_armor_smithing_template"
+    },
+    "g": {
+      "item": "minecraft:sunflower"
+    }
+  },
+  "result": {
+    "item": "space_marines:royal_zealot_trim_template",
+    "count": 1
+  }
+}
