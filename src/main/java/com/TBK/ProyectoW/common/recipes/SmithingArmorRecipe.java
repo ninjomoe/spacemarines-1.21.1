@@ -2,6 +2,7 @@ package com.TBK.ProyectoW.common.recipes;
 
 import com.TBK.ProyectoW.common.items.TemplateWarhammerItem;
 import com.TBK.ProyectoW.common.items.WarHammerArmorItem;
+import com.TBK.ProyectoW.common.registry.PWItems;
 import com.TBK.ProyectoW.common.registry.PWRecipeSerializer;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -62,6 +63,11 @@ public class SmithingArmorRecipe implements SmithingRecipe {
                 Item templateItem = templateStack.getItem();
                 if (templateItem instanceof TemplateWarhammerItem template) {
                     armor.setFaction(template.getFaction(), result);
+                    return result;
+                }
+
+                if (templateItem == PWItems.MARINE_VISOR_UPGRADE.get()) {
+                    armor.saveVisor(result, input.addition());
                     return result;
                 }
             }

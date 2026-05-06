@@ -2,7 +2,7 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "space_marines:item/marine_helmet",
-    "layer1": "space_marines:item/marine_helmet_overlay"
-
+    "layer1": "space_marines:item/marine_helmet_overlay",
+    "layer2": "space_marines:item/marine_helmet_visor"
   }
 }

@@ -16,6 +16,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -27,6 +28,9 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class WarHammerArmorItem extends ArmorItem implements GeoItem {
+    public static final int DEFAULT_VISOR_COLOR = 0xFFFF3030;
+    private static final String VISOR_COLOR_TAG = "visor_color";
+    private static final String VISOR_MATERIAL_TAG = "visor_material";
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private Factions faction;
 
@@ -87,6 +91,87 @@ public class WarHammerArmorItem extends ArmorItem implements GeoItem {
 
     public void saveFaction(ItemStack stack, String name) {
         CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putString("faction", name));
+    }
+
+    public int getVisorColor(ItemStack stack) {
+        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+        if (customData.contains(VISOR_COLOR_TAG)) {
+            return customData.copyTag().getInt(VISOR_COLOR_TAG);
+        }
+
+        return DEFAULT_VISOR_COLOR;
+    }
+
+    public void saveVisorColor(ItemStack stack, int color) {
+        CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putInt(VISOR_COLOR_TAG, color));
+    }
+
+    public String getVisorMaterial(ItemStack stack) {
+        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+        if (customData.contains(VISOR_MATERIAL_TAG)) {
+            return customData.copyTag().getString(VISOR_MATERIAL_TAG);
+        }
+
+        return "redstone";
+    }
+
+    public void saveVisor(ItemStack stack, ItemStack material) {
+        CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> {
+            tag.putInt(VISOR_COLOR_TAG, getVisorColorForMaterial(material));
+            tag.putString(VISOR_MATERIAL_TAG, getVisorMaterialForMaterial(material));
+        });
+    }
+
+    public static String getVisorMaterialForMaterial(ItemStack material) {
+        if (material.is(Items.IRON_INGOT)) {
+            return "iron";
+        } else if (material.is(Items.COPPER_INGOT)) {
+            return "copper";
+        } else if (material.is(Items.GOLD_INGOT)) {
+            return "gold";
+        } else if (material.is(Items.LAPIS_LAZULI)) {
+            return "lapis";
+        } else if (material.is(Items.EMERALD)) {
+            return "emerald";
+        } else if (material.is(Items.DIAMOND)) {
+            return "diamond";
+        } else if (material.is(Items.NETHERITE_INGOT)) {
+            return "netherite";
+        } else if (material.is(Items.REDSTONE)) {
+            return "redstone";
+        } else if (material.is(Items.AMETHYST_SHARD)) {
+            return "amethyst";
+        } else if (material.is(Items.QUARTZ)) {
+            return "quartz";
+        }
+
+        return "redstone";
+    }
+
+    public static int getVisorColorForMaterial(ItemStack material) {
+        if (material.is(Items.IRON_INGOT)) {
+            return 0xFFE6E6E6;
+        } else if (material.is(Items.COPPER_INGOT)) {
+            return 0xFFFF8A3D;
+        } else if (material.is(Items.GOLD_INGOT)) {
+            return 0xFFFFD83D;
+        } else if (material.is(Items.LAPIS_LAZULI)) {
+            return 0xFF305CFF;
+        } else if (material.is(Items.EMERALD)) {
+            return 0xFF24E36A;
+        } else if (material.is(Items.DIAMOND)) {
+            return 0xFF55FFFF;
+        } else if (material.is(Items.NETHERITE_INGOT)) {
+            return 0xFF4A3F52;
+        } else if (material.is(Items.REDSTONE)) {
+            return DEFAULT_VISOR_COLOR;
+        } else if (material.is(Items.AMETHYST_SHARD)) {
+            return 0xFFC06CFF;
+        } else if (material.is(Items.QUARTZ)) {
+            return 0xFFFFFFFF;
+        }
+
+        return DEFAULT_VISOR_COLOR;
     }
 
     @Override

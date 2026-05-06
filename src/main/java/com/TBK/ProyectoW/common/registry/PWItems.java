@@ -30,6 +30,7 @@ public class PWItems {
     public static final DeferredItem<WarHammerArmorItem> WARHAMMER_BOOT;
     public static final DeferredItem<Item> CERAMITE_INGOT;
     public static final DeferredItem<Item> MARINE_ARMOR_SMITHING_TEMPLATE;
+    public static final DeferredItem<Item> MARINE_VISOR_UPGRADE;
     public static final DeferredItem<TemplateWarhammerItem> ROYAL_ZEALOT_TRIM_TEMPLATE;
     public static final DeferredItem<TemplateWarhammerItem> PROTO_SUIT_TRIM_TEMPLATE;
     public static final DeferredItem<TemplateWarhammerItem> INFERNAL_CHAOS_TRIM_TEMPLATE;
@@ -70,6 +71,7 @@ public class PWItems {
         WARHAMMER_LEGGINGS = ITEMS.register("warhammer_leggings", () -> new WarHammerArmorItem((Holder<ArmorMaterial>) CERAMITE, Type.LEGGINGS, armorProps(Type.LEGGINGS)));
         WARHAMMER_BOOT = ITEMS.register("warhammer_boot", () -> new WarHammerArmorItem((Holder<ArmorMaterial>) CERAMITE, Type.BOOTS, armorProps(Type.BOOTS)));
         MARINE_ARMOR_SMITHING_TEMPLATE = ITEMS.register("marine_armor_smithing_template", () -> new Item(new Item.Properties()));
+        MARINE_VISOR_UPGRADE = ITEMS.register("marine_visor_upgrade", () -> new Item(new Item.Properties()));
         ROYAL_ZEALOT_TRIM_TEMPLATE = ITEMS.register("royal_zealot_trim_template", () -> new TemplateWarhammerItem(props(), Factions.ROYAL_ZEALOT));
         PROTO_SUIT_TRIM_TEMPLATE = ITEMS.register("proto_suit_trim_template", () -> new TemplateWarhammerItem(props(), Factions.PROTO_SUIT));
         INFERNAL_CHAOS_TRIM_TEMPLATE = ITEMS.register("infernal_chaos_trim_template", () -> new TemplateWarhammerItem(props(), Factions.INFERNAL_CHAOS));

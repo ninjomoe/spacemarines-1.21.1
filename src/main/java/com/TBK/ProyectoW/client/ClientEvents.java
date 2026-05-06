@@ -1,6 +1,7 @@
 package com.TBK.ProyectoW.client;
 
 import com.TBK.ProyectoW.SpaceMarines;
+import com.TBK.ProyectoW.common.items.WarHammerArmorItem;
 import com.TBK.ProyectoW.common.registry.PWItems;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.neoforged.api.distmarker.Dist;
@@ -21,7 +22,17 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onClientSetup(RegisterColorHandlersEvent.Item event) {
         event.register(
-                (stack, tintIndex) -> tintIndex > 0 ? -1 : DyedItemColor.getOrDefault(stack, -1),
+                (stack, tintIndex) -> {
+                    if (tintIndex == 0) {
+                        return DyedItemColor.getOrDefault(stack, -1);
+                    }
+
+                    if (tintIndex == 2 && stack.getItem() instanceof WarHammerArmorItem armor) {
+                        return armor.getVisorColor(stack);
+                    }
+
+                    return -1;
+                },
                 PWItems.WARHAMMER_HELMET.get(),
                 PWItems.WARHAMMER_CHEST.get(),
                 PWItems.WARHAMMER_LEGGINGS.get(),

@@ -26,6 +26,7 @@ public class PWCreativeTabs {
                     output.accept(PWItems.WARHAMMER_LEGGINGS.get());
                     output.accept(PWItems.WARHAMMER_BOOT.get());
                     output.accept(PWItems.MARINE_ARMOR_SMITHING_TEMPLATE.get());
+                    output.accept(PWItems.MARINE_VISOR_UPGRADE.get());
                     output.accept(PWItems.HOLY_CRUSADER_TRIM_TEMPLATE.get());
                     output.accept(PWItems.ROYAL_ZEALOT_TRIM_TEMPLATE.get());
                     output.accept(PWItems.SILVER_SKULL_TRIM_TEMPLATE.get());
