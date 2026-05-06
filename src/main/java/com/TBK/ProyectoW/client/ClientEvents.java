@@ -1,21 +1,16 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package com.TBK.ProyectoW.client;
 
+import com.TBK.ProyectoW.SpaceMarines;
 import com.TBK.ProyectoW.common.registry.PWItems;
-import net.minecraft.world.item.DyeableLeatherItem;
-import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraft.world.item.component.DyedItemColor;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
 @EventBusSubscriber(
-        modid = "space_marines",
+        modid = SpaceMarines.MODID,
         bus = Bus.MOD,
         value = {Dist.CLIENT}
 )
@@ -25,6 +20,12 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onClientSetup(RegisterColorHandlersEvent.Item event) {
-        event.register((p_92708_, p_92709_) -> p_92709_ > 0 ? -1 : ((DyeableLeatherItem)p_92708_.m_41720_()).m_41121_(p_92708_), new ItemLike[]{(ItemLike)PWItems.WARHAMMER_HELMET.get(), (ItemLike)PWItems.WARHAMMER_CHEST.get(), (ItemLike)PWItems.WARHAMMER_LEGGINGS.get(), (ItemLike)PWItems.WARHAMMER_BOOT.get()});
+        event.register(
+                (stack, tintIndex) -> tintIndex > 0 ? -1 : DyedItemColor.getOrDefault(stack, -1),
+                PWItems.WARHAMMER_HELMET.get(),
+                PWItems.WARHAMMER_CHEST.get(),
+                PWItems.WARHAMMER_LEGGINGS.get(),
+                PWItems.WARHAMMER_BOOT.get()
+        );
     }
 }

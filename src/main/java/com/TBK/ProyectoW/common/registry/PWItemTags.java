@@ -1,10 +1,6 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package com.TBK.ProyectoW.common.registry;
 
+import com.TBK.ProyectoW.SpaceMarines;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -17,6 +13,6 @@ public class PWItemTags {
     }
 
     private static TagKey<Item> bind(String p_203855_) {
-        return TagKey.m_203882_(Registries.f_256913_, new ResourceLocation(p_203855_));
+        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(SpaceMarines.MODID, p_203855_));
     }
 }

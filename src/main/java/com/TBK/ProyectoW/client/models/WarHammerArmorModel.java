@@ -1,10 +1,6 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package com.TBK.ProyectoW.client.models;
 
+import com.TBK.ProyectoW.SpaceMarines;
 import com.TBK.ProyectoW.common.items.WarHammerArmorItem;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
@@ -14,14 +10,14 @@ public class WarHammerArmorModel<T extends WarHammerArmorItem> extends GeoModel<
     }
 
     public ResourceLocation getModelResource(T object) {
-        return new ResourceLocation("space_marines", "geo/warhammer_armor.geo.json");
+        return ResourceLocation.fromNamespaceAndPath(SpaceMarines.MODID, "geo/warhammer_armor.geo.json");
     }
 
     public ResourceLocation getTextureResource(T object) {
-        return new ResourceLocation("space_marines", "textures/armor/warhammer_armor.png");
+        return ResourceLocation.fromNamespaceAndPath(SpaceMarines.MODID, "textures/armor/warhammer_armor.png");
     }
 
     public ResourceLocation getAnimationResource(T animatable) {
-        return new ResourceLocation("space_marines", "animations/warhammer_armor.animation.json");
+        return ResourceLocation.fromNamespaceAndPath(SpaceMarines.MODID, "animations/warhammer_armor.animation.json");
     }
 }

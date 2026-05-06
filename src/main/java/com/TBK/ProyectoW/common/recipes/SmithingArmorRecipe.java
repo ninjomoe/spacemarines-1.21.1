@@ -1,123 +1,129 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package com.TBK.ProyectoW.common.recipes;
 
 import com.TBK.ProyectoW.common.items.TemplateWarhammerItem;
 import com.TBK.ProyectoW.common.items.WarHammerArmorItem;
 import com.TBK.ProyectoW.common.registry.PWRecipeSerializer;
-import com.google.gson.JsonObject;
-import java.util.Optional;
-import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.stream.Stream;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.armortrim.ArmorTrim;
-import net.minecraft.world.item.armortrim.TrimMaterial;
-import net.minecraft.world.item.armortrim.TrimMaterials;
-import net.minecraft.world.item.armortrim.TrimPattern;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SmithingRecipe;
+import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.level.Level;
 
 public class SmithingArmorRecipe implements SmithingRecipe {
-    private final ResourceLocation id;
     final Ingredient template;
     final Ingredient base;
+    final Ingredient addition;
+    final ItemStack result;
 
-    public SmithingArmorRecipe(ResourceLocation p_267235_, Ingredient p_267298_, Ingredient p_266862_) {
-        this.id = p_267235_;
-        this.template = p_267298_;
-        this.base = p_266862_;
+    public SmithingArmorRecipe(Ingredient template, Ingredient base, Ingredient addition, ItemStack result) {
+        this.template = template;
+        this.base = base;
+        this.addition = addition;
+        this.result = result;
     }
 
-    public boolean m_266166_(ItemStack p_266982_) {
+    @Override
+    public boolean isTemplateIngredient(ItemStack p_266982_) {
         return this.template.test(p_266982_);
     }
 
-    public boolean m_266343_(ItemStack p_266962_) {
+    @Override
+    public boolean isBaseIngredient(ItemStack p_266962_) {
         return this.base.test(p_266962_);
     }
 
-    public boolean m_266253_(ItemStack p_267132_) {
-        return false;
+    @Override
+    public boolean isAdditionIngredient(ItemStack p_267132_) {
+        return this.addition.test(p_267132_);
     }
 
-    public boolean m_5818_(Container p_44002_, Level p_44003_) {
-        return this.template.test(p_44002_.m_8020_(0)) && this.base.test(p_44002_.m_8020_(1));
+    @Override
+    public boolean matches(SmithingRecipeInput input, Level level) {
+        return this.template.test(input.template()) && this.base.test(input.base()) && this.addition.test(input.addition());
     }
 
-    public ItemStack m_5874_(Container p_44001_, RegistryAccess p_267165_) {
-        ItemStack itemstack = p_44001_.m_8020_(1);
-        if (this.base.test(itemstack)) {
-            ItemStack itemstack1 = p_44001_.m_8020_(0);
-            ItemStack itemstack2 = itemstack.m_41777_();
-            itemstack2.m_41764_(1);
-            Item var8 = itemstack2.m_41720_();
-            if (var8 instanceof WarHammerArmorItem) {
-                WarHammerArmorItem armor = (WarHammerArmorItem)var8;
-                var8 = itemstack1.m_41720_();
-                if (var8 instanceof TemplateWarhammerItem) {
-                    TemplateWarhammerItem template = (TemplateWarhammerItem)var8;
-                    armor.setFaction(template.getFaction(), itemstack2);
-                    return itemstack2;
+    @Override
+    public ItemStack assemble(SmithingRecipeInput input, HolderLookup.Provider registries) {
+        ItemStack itemstack = input.base();
+        if (this.base.test(itemstack) && this.addition.test(input.addition())) {
+            ItemStack templateStack = input.template();
+            ItemStack result = itemstack.copy();
+            result.setCount(1);
+            Item item = result.getItem();
+            if (item instanceof WarHammerArmorItem armor) {
+                Item templateItem = templateStack.getItem();
+                if (templateItem instanceof TemplateWarhammerItem template) {
+                    armor.setFaction(template.getFaction(), result);
+                    return result;
                 }
             }
-        }
 
-        return ItemStack.f_41583_;
-    }
-
-    public ItemStack m_8043_(RegistryAccess p_266948_) {
-        ItemStack itemstack = new ItemStack(Items.f_42469_);
-        Optional<Holder.Reference<TrimPattern>> optional = p_266948_.m_175515_(Registries.f_266063_).m_203611_().findFirst();
-        if (optional.isPresent()) {
-            Optional<Holder.Reference<TrimMaterial>> optional1 = p_266948_.m_175515_(Registries.f_266076_).m_203636_(TrimMaterials.f_265870_);
-            if (optional1.isPresent()) {
-                ArmorTrim armortrim = new ArmorTrim((Holder)optional1.get(), (Holder)optional.get());
-                ArmorTrim.m_266570_(p_266948_, itemstack, armortrim);
+            if (!this.result.isEmpty()) {
+                return this.result.copy();
             }
         }
 
-        return itemstack;
+        return ItemStack.EMPTY;
     }
 
-    public ResourceLocation m_6423_() {
-        return this.id;
+    @Override
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
+        return this.result;
     }
 
-    public RecipeSerializer<?> m_7707_() {
-        return (RecipeSerializer)PWRecipeSerializer.SMITHING_WARHAMMER_RECIPE.get();
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return PWRecipeSerializer.SMITHING_WARHAMMER_RECIPE.get();
+    }
+
+    @Override
+    public boolean isIncomplete() {
+        return Stream.of(this.template, this.base, this.addition).anyMatch(Ingredient::hasNoItems);
     }
 
     public static class Serializer implements RecipeSerializer<SmithingArmorRecipe> {
-        public Serializer() {
+        private static final MapCodec<SmithingArmorRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                Ingredient.CODEC.fieldOf("template").forGetter(recipe -> recipe.template),
+                Ingredient.CODEC.fieldOf("base").forGetter(recipe -> recipe.base),
+                Ingredient.CODEC.fieldOf("addition").forGetter(recipe -> recipe.addition),
+                ItemStack.STRICT_CODEC.optionalFieldOf("result", ItemStack.EMPTY).forGetter(recipe -> recipe.result)
+        ).apply(instance, SmithingArmorRecipe::new));
+        private static final StreamCodec<RegistryFriendlyByteBuf, SmithingArmorRecipe> STREAM_CODEC = StreamCodec.of(
+                Serializer::toNetwork,
+                Serializer::fromNetwork
+        );
+
+        @Override
+        public MapCodec<SmithingArmorRecipe> codec() {
+            return CODEC;
         }
 
-        public SmithingArmorRecipe fromJson(ResourceLocation p_267037_, JsonObject p_267004_) {
-            Ingredient ingredient = Ingredient.m_43917_(GsonHelper.m_289747_(p_267004_, "template"));
-            Ingredient ingredient1 = Ingredient.m_43917_(GsonHelper.m_289747_(p_267004_, "base"));
-            return new SmithingArmorRecipe(p_267037_, ingredient, ingredient1);
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, SmithingArmorRecipe> streamCodec() {
+            return STREAM_CODEC;
         }
 
-        public SmithingArmorRecipe fromNetwork(ResourceLocation p_267169_, FriendlyByteBuf p_267251_) {
-            Ingredient ingredient = Ingredient.m_43940_(p_267251_);
-            Ingredient ingredient1 = Ingredient.m_43940_(p_267251_);
-            return new SmithingArmorRecipe(p_267169_, ingredient, ingredient1);
+        private static SmithingArmorRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
+            Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
+            Ingredient ingredient1 = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
+            Ingredient ingredient2 = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
+            ItemStack result = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
+            return new SmithingArmorRecipe(ingredient, ingredient1, ingredient2, result);
         }
 
-        public void toNetwork(FriendlyByteBuf p_266901_, SmithingArmorRecipe p_266893_) {
-            p_266893_.template.m_43923_(p_266901_);
-            p_266893_.base.m_43923_(p_266901_);
+        private static void toNetwork(RegistryFriendlyByteBuf buffer, SmithingArmorRecipe recipe) {
+            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.template);
+            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.base);
+            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.addition);
+            ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, recipe.result);
         }
     }
 }

@@ -1,10 +1,6 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package com.TBK.ProyectoW.client.layers;
 
+import com.TBK.ProyectoW.SpaceMarines;
 import com.TBK.ProyectoW.common.items.WarHammerArmorItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -17,6 +13,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoArmorRenderer;
 import software.bernie.geckolib.renderer.GeoRenderer;
 
 public class EyeLayer<T extends WarHammerArmorItem> extends ItemGeoRenderLayer<T> {
@@ -24,20 +21,21 @@ public class EyeLayer<T extends WarHammerArmorItem> extends ItemGeoRenderLayer<T
         super(entityRendererIn);
     }
 
-    public void render(ItemStack stack, PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        Item var12 = stack.m_41720_();
-        if (var12 instanceof ArmorItem armorItem) {
-            if (armorItem.m_266204_().m_266308_().equals(EquipmentSlot.HEAD)) {
+    @Override
+    public void render(PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        if (this.getRenderer() instanceof GeoArmorRenderer<?> armorRenderer) {
+            ItemStack stack = armorRenderer.getCurrentStack();
+            Item item = stack.getItem();
+            if (item instanceof ArmorItem armorItem && armorItem.getType().getSlot().equals(EquipmentSlot.HEAD)) {
                 ResourceLocation texture = this.getTexture();
-                renderType = RenderType.m_110488_(texture);
-                VertexConsumer consumer = bufferSource.m_6299_(renderType);
-                this.getRenderer().reRender(model, poseStack, bufferSource, animatable, renderType, consumer, partialTick, packedLight, OverlayTexture.f_118083_, 1.0F, 1.0F, 1.0F, 1.0F);
+                RenderType eyeRenderType = RenderType.eyes(texture);
+                VertexConsumer consumer = bufferSource.getBuffer(eyeRenderType);
+                this.getRenderer().reRender(model, poseStack, bufferSource, animatable, eyeRenderType, consumer, partialTick, packedLight, OverlayTexture.NO_OVERLAY, -1);
             }
         }
-
     }
 
     public ResourceLocation getTexture() {
-        return new ResourceLocation("space_marines", "textures/armor/eye_details.png");
+        return ResourceLocation.fromNamespaceAndPath(SpaceMarines.MODID, "textures/armor/eye_details.png");
     }
 }

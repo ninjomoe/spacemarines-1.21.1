@@ -1,12 +1,8 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package com.TBK.ProyectoW.common.items;
 
 public enum Factions {
-    NONE((String)null, false, false, false),
+    NONE("holy_crusader", false, false, false),
+    HOLY_CRUSADER("holy_crusader", false, true, false),
     ROYAL_ZEALOT("royal_zealot", true, false, false),
     PROTO_SUIT("proto_suit", true, true, false),
     INFERNAL_CHAOS("infernal_chaos", true, true, false),
@@ -41,6 +37,10 @@ public enum Factions {
     }
 
     public static Factions getForName(String name) {
-        return (Factions)valueOf(Factions.class, name);
+        try {
+            return valueOf(name.toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            return NONE;
+        }
     }
 }
