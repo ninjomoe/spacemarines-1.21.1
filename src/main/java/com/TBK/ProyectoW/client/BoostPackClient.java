@@ -8,7 +8,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -74,6 +73,7 @@ public class BoostPackClient {
         }
 
         if (sentBoosting && clientBoostTicks > 0) {
+            PacketDistributor.sendToServer(new BoostPackTogglePayload(true, player.xxa, player.zza, player.isSprinting()));
             clientBoostTicks--;
             if (clientBoostTicks <= 0) {
                 setBoosting(false);
@@ -88,7 +88,12 @@ public class BoostPackClient {
 
         sentBoosting = boosting;
 
-        PacketDistributor.sendToServer(new BoostPackTogglePayload(boosting));
+        Minecraft minecraft = Minecraft.getInstance();
+        Player player = minecraft.player;
+        float strafe = player == null ? 0.0F : player.xxa;
+        float forward = player == null ? 0.0F : player.zza;
+        boolean sprinting = player != null && player.isSprinting();
+        PacketDistributor.sendToServer(new BoostPackTogglePayload(boosting, strafe, forward, sprinting));
     }
 
     @SubscribeEvent
@@ -101,22 +106,21 @@ public class BoostPackClient {
         Minecraft minecraft = Minecraft.getInstance();
         int width = minecraft.getWindow().getGuiScaledWidth();
         int height = minecraft.getWindow().getGuiScaledHeight();
-        int barWidth = 48;
-        int barHeight = 34;
-        int x = (width - barWidth) / 2;
-        int y = height - 70;
+        int barWidth = 18;
+        int barHeight = 30;
+        int hotbarWidth = 182;
+        int x = (width - hotbarWidth) / 2 - barWidth - 6;
+        int y = height - 24;
         float progress = clientBoostTicks / (float) BoostPackHandler.MAX_BOOST_TICKS;
         int stripes = 10;
         int activeStripes = Math.round(stripes * progress);
 
-        graphics.fill(x, y, x + barWidth, y + barHeight, 0xAA000000);
+        graphics.fill(x, y, x + barWidth, y + barHeight, 0x99000000);
         for (int i = 0; i < stripes; i++) {
             int stripeY = y + 2 + i * 3;
             boolean depleted = i < stripes - activeStripes;
             int color = depleted ? 0xFF555555 : 0xFFFFFFFF;
-            graphics.fill(x + 4, stripeY, x + barWidth - 4, stripeY + 2, color);
+            graphics.fill(x + 3, stripeY, x + barWidth - 3, stripeY + 2, color);
         }
-
-        graphics.drawString(minecraft.font, Component.literal("BOOST"), x + 8, y - 10, 0xFFFFFF, true);
     }
 }

@@ -88,6 +88,7 @@ public class WarHammerArmorItem extends ArmorItem implements GeoItem {
         if (this.isMarineArmor(livingEntity.getItemBySlot(EquipmentSlot.CHEST))) {
             livingEntity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, EFFECT_DURATION, 1, true, false, true));
             livingEntity.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, EFFECT_DURATION, 1, true, false, true));
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, EFFECT_DURATION, 0, true, false, true));
         }
 
         if (this.hasFullMarineSet(livingEntity)) {

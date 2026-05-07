@@ -10,19 +10,25 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class BoostPackHandler {
-    public static final int MAX_BOOST_TICKS = 60;
-    private static final double BOOST_SPEED = 0.36D;
-    private static final double AIR_ACCELERATION = 0.08D;
-    private static final double MAX_HORIZONTAL_SPEED = 0.42D;
+    public static final int MAX_BOOST_TICKS = 40;
+    private static final double VERTICAL_ACCELERATION = 0.075D;
+    private static final double MAX_VERTICAL_SPEED = 0.48D;
+    private static final double WALK_AIR_ACCELERATION = 0.04D;
+    private static final double SPRINT_AIR_ACCELERATION = 0.07D;
+    private static final double WALK_MAX_HORIZONTAL_SPEED = 0.42D;
+    private static final double SPRINT_MAX_HORIZONTAL_SPEED = 0.70D;
     private static final Map<UUID, BoostState> BOOST_STATES = new HashMap<>();
 
-    public static void setBoosting(Player player, boolean active) {
+    public static void setBoosting(Player player, boolean active, float strafe, float forward, boolean sprinting) {
         if (player.level().isClientSide()) {
             return;
         }
 
         BoostState state = BOOST_STATES.computeIfAbsent(player.getUUID(), uuid -> new BoostState());
         state.active = active && WarHammerArmorItem.hasMarineChestplate(player) && state.remainingTicks > 0;
+        state.strafe = strafe;
+        state.forward = forward;
+        state.sprinting = sprinting;
     }
 
     public static void reset(Player player) {
@@ -83,10 +89,8 @@ public class BoostPackHandler {
             return;
         }
 
-        Vec3 movement = applyAirInput(player, player.getDeltaMovement());
-        double x = clampHorizontal(movement.x);
-        double z = clampHorizontal(movement.z);
-        player.setDeltaMovement(x, BOOST_SPEED, z);
+        Vec3 movement = applyBoostMovement(player, player.getDeltaMovement(), state);
+        player.setDeltaMovement(movement);
         player.hurtMarked = true;
         player.fallDistance = 0.0F;
         spawnBoostParticles(player);
@@ -97,22 +101,34 @@ public class BoostPackHandler {
         }
     }
 
-    private static Vec3 applyAirInput(Player player, Vec3 movement) {
-        double strafe = player.xxa;
-        double forward = player.zza;
+    private static Vec3 applyBoostMovement(Player player, Vec3 movement, BoostState state) {
+        double strafe = state.strafe;
+        double forward = state.forward;
         double inputLength = Math.sqrt(strafe * strafe + forward * forward);
-        if (inputLength <= 0.0D) {
-            return movement;
+        double x = movement.x;
+        double z = movement.z;
+
+        double maxHorizontalSpeed = state.sprinting ? SPRINT_MAX_HORIZONTAL_SPEED : WALK_MAX_HORIZONTAL_SPEED;
+        if (inputLength > 0.0D) {
+            strafe /= inputLength;
+            forward /= inputLength;
+            double acceleration = state.sprinting ? SPRINT_AIR_ACCELERATION : WALK_AIR_ACCELERATION;
+            double yaw = Math.toRadians(player.getYRot());
+            double sin = Math.sin(yaw);
+            double cos = Math.cos(yaw);
+            x += (strafe * cos - forward * sin) * acceleration;
+            z += (forward * cos + strafe * sin) * acceleration;
         }
 
-        strafe /= inputLength;
-        forward /= inputLength;
-        double yaw = Math.toRadians(player.getYRot());
-        double sin = Math.sin(yaw);
-        double cos = Math.cos(yaw);
-        double x = movement.x + (strafe * cos - forward * sin) * AIR_ACCELERATION;
-        double z = movement.z + (forward * cos + strafe * sin) * AIR_ACCELERATION;
-        return new Vec3(x, movement.y, z);
+        double horizontalSpeed = Math.sqrt(x * x + z * z);
+        if (horizontalSpeed > maxHorizontalSpeed) {
+            double scale = maxHorizontalSpeed / horizontalSpeed;
+            x *= scale;
+            z *= scale;
+        }
+
+        double y = Math.min(movement.y + VERTICAL_ACCELERATION, MAX_VERTICAL_SPEED);
+        return new Vec3(x, y, z);
     }
 
     private static void spawnBoostParticles(Player player) {
@@ -128,20 +144,11 @@ public class BoostPackHandler {
         serverLevel.sendParticles(ParticleTypes.END_ROD, x, y, z, 2, 0.08D, 0.06D, 0.08D, 0.01D);
     }
 
-    private static double clampHorizontal(double value) {
-        if (value > MAX_HORIZONTAL_SPEED) {
-            return MAX_HORIZONTAL_SPEED;
-        }
-
-        if (value < -MAX_HORIZONTAL_SPEED) {
-            return -MAX_HORIZONTAL_SPEED;
-        }
-
-        return value;
-    }
-
     private static class BoostState {
         private boolean active;
+        private boolean sprinting;
+        private float strafe;
+        private float forward;
         private int remainingTicks = MAX_BOOST_TICKS;
     }
 }
