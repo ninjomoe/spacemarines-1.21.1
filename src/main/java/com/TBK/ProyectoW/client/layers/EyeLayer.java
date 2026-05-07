@@ -1,6 +1,7 @@
 package com.TBK.ProyectoW.client.layers;
 
 import com.TBK.ProyectoW.SpaceMarines;
+import com.TBK.ProyectoW.common.items.MarineShadesItem;
 import com.TBK.ProyectoW.common.items.WarHammerArmorItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -39,6 +40,7 @@ public class EyeLayer<T extends WarHammerArmorItem> extends ItemGeoRenderLayer<T
 
     public ResourceLocation getTexture(ItemStack stack) {
         String material = stack.getItem() instanceof WarHammerArmorItem armor ? armor.getVisorMaterial(stack) : "redstone";
-        return ResourceLocation.fromNamespaceAndPath(SpaceMarines.MODID, "textures/armor/eye_details/" + material + ".png");
+        String folder = stack.getItem() instanceof MarineShadesItem shades ? (shades.isLow() ? "shades_details_low" : "shades_details") : "eye_details";
+        return ResourceLocation.fromNamespaceAndPath(SpaceMarines.MODID, "textures/armor/" + folder + "/" + material + ".png");
     }
 }

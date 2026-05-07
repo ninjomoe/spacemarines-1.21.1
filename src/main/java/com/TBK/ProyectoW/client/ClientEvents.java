@@ -1,6 +1,7 @@
 package com.TBK.ProyectoW.client;
 
 import com.TBK.ProyectoW.SpaceMarines;
+import com.TBK.ProyectoW.common.items.MarineShadesItem;
 import com.TBK.ProyectoW.common.items.WarHammerArmorItem;
 import com.TBK.ProyectoW.common.registry.PWItems;
 import net.minecraft.world.item.component.DyedItemColor;
@@ -37,6 +38,11 @@ public class ClientEvents {
                 PWItems.WARHAMMER_CHEST.get(),
                 PWItems.WARHAMMER_LEGGINGS.get(),
                 PWItems.WARHAMMER_BOOT.get()
+        );
+        event.register(
+                (stack, tintIndex) -> tintIndex == 1 && stack.getItem() instanceof MarineShadesItem shades ? shades.getVisorColor(stack) : -1,
+                PWItems.MARINE_SHADES.get(),
+                PWItems.MARINE_SHADES_LOW.get()
         );
     }
 }
