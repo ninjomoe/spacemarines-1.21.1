@@ -8,6 +8,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -48,6 +49,7 @@ public class BoostPackClient {
 
         while (BOOST_KEY.consumeClick()) {
             boostPackEnabled = !boostPackEnabled;
+            minecraft.gui.setOverlayMessage(Component.literal("Boost Pack toggled " + (boostPackEnabled ? "ON" : "OFF")), false);
             if (!boostPackEnabled) {
                 setBoosting(false);
             }
@@ -107,20 +109,18 @@ public class BoostPackClient {
         int width = minecraft.getWindow().getGuiScaledWidth();
         int height = minecraft.getWindow().getGuiScaledHeight();
         int barWidth = 18;
-        int barHeight = 30;
         int hotbarWidth = 182;
-        int x = (width - hotbarWidth) / 2 - barWidth - 6;
-        int y = height - 24;
+        int x = (width - hotbarWidth) / 2 - barWidth - 2;
+        int y = height - 21;
         float progress = clientBoostTicks / (float) BoostPackHandler.MAX_BOOST_TICKS;
         int stripes = 10;
         int activeStripes = Math.round(stripes * progress);
 
-        graphics.fill(x, y, x + barWidth, y + barHeight, 0x99000000);
         for (int i = 0; i < stripes; i++) {
-            int stripeY = y + 2 + i * 3;
+            int stripeY = y + i * 2;
             boolean depleted = i < stripes - activeStripes;
             int color = depleted ? 0xFF555555 : 0xFFFFFFFF;
-            graphics.fill(x + 3, stripeY, x + barWidth - 3, stripeY + 2, color);
+            graphics.fill(x + 2, stripeY, x + barWidth - 2, stripeY + 1, color);
         }
     }
 }
