@@ -31,6 +31,22 @@ public class SmithingArmorRecipe implements SmithingRecipe {
         this.result = result;
     }
 
+    public Ingredient getTemplate() {
+        return this.template;
+    }
+
+    public Ingredient getBase() {
+        return this.base;
+    }
+
+    public Ingredient getAddition() {
+        return this.addition;
+    }
+
+    public ItemStack getResult() {
+        return this.result;
+    }
+
     @Override
     public boolean isTemplateIngredient(ItemStack p_266982_) {
         return this.template.test(p_266982_);

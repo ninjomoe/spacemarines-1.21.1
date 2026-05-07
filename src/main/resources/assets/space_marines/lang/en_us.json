@@ -16,6 +16,9 @@
 
   "item.space_marines.ceramite_ingot": "Ceramite Ingot",
 
+  "key.categories.space_marines": "Space Marines",
+  "key.space_marines.boost_pack": "Toggle Boost Pack",
+
   "itemGroup.warhammer_tab": "Space Marines",
   "factions.decrip": "Trim:",
   "factions.ROYAL_ZEALOT": "Royal Zealot",

@@ -2,6 +2,7 @@ package com.TBK.ProyectoW;
 
 import com.TBK.ProyectoW.common.registry.PWCreativeTabs;
 import com.TBK.ProyectoW.common.registry.PWItems;
+import com.TBK.ProyectoW.common.registry.PWNetwork;
 import com.TBK.ProyectoW.common.registry.PWRecipeSerializer;
 import com.TBK.ProyectoW.server.data.tags.PWItemTagsProvider;
 import java.util.concurrent.CompletableFuture;
@@ -23,6 +24,7 @@ public class SpaceMarines {
         PWItems.ARMOR_MATERIALS.register(modEventBus);
         PWCreativeTabs.TABS.register(modEventBus);
         PWRecipeSerializer.RECIPE_SERIALIZERS.register(modEventBus);
+        modEventBus.addListener(PWNetwork::registerPayloads);
         modEventBus.addListener(this::dataSetup);
     }
 

@@ -8,6 +8,7 @@ import com.TBK.ProyectoW.common.items.WarHammerArmorItem;
 import java.util.EnumMap;
 import java.util.List;
 import net.minecraft.Util;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -16,6 +17,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ArmorItem.Type;
+import net.minecraft.world.item.component.Unbreakable;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -49,25 +51,28 @@ public class PWItems {
     }
 
     public static Item.Properties armorProps(ArmorItem.Type type) {
-        return props().durability(type.getDurability(27)).fireResistant();
+        return props()
+                .durability(type.getDurability(27))
+                .component(DataComponents.UNBREAKABLE, new Unbreakable(false))
+                .fireResistant();
     }
 
     static {
         CERAMITE_INGOT = ITEMS.register("ceramite_ingot", () -> new Item(props().fireResistant()));
         CERAMITE = ARMOR_MATERIALS.register("ceramite", () -> new ArmorMaterial(
                 Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
-                    map.put(Type.BOOTS, 3);
-                    map.put(Type.LEGGINGS, 6);
-                    map.put(Type.CHESTPLATE, 8);
-                    map.put(Type.HELMET, 3);
+                    map.put(Type.BOOTS, 5);
+                    map.put(Type.LEGGINGS, 9);
+                    map.put(Type.CHESTPLATE, 12);
+                    map.put(Type.HELMET, 5);
                     map.put(Type.BODY, 11);
                 }),
                 15,
                 SoundEvents.ARMOR_EQUIP_NETHERITE,
                 () -> Ingredient.of(CERAMITE_INGOT.get()),
                 List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(SpaceMarines.MODID, "ceramite"))),
-                4.0F,
-                0.2F
+                4.5F,
+                0.15F
         ));
         WARHAMMER_HELMET = ITEMS.register("warhammer_helmet", () -> new WarHammerArmorItem((Holder<ArmorMaterial>) CERAMITE, Type.HELMET, armorProps(Type.HELMET)));
         WARHAMMER_CHEST = ITEMS.register("warhammer_chest", () -> new WarHammerArmorItem((Holder<ArmorMaterial>) CERAMITE, Type.CHESTPLATE, armorProps(Type.CHESTPLATE)));

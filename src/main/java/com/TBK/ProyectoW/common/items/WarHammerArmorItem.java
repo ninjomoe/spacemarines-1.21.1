@@ -12,13 +12,19 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoItem;
@@ -29,6 +35,9 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class WarHammerArmorItem extends ArmorItem implements GeoItem {
     public static final int DEFAULT_VISOR_COLOR = 0xFFFF3030;
+    private static final int EFFECT_DURATION = 400;
+    private static final double MAX_LAVA_HORIZONTAL_SPEED = 0.18D;
+    private static final double LAVA_HORIZONTAL_BOOST = 1.16D;
     private static final String VISOR_COLOR_TAG = "visor_color";
     private static final String VISOR_MATERIAL_TAG = "visor_material";
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
@@ -59,9 +68,85 @@ public class WarHammerArmorItem extends ArmorItem implements GeoItem {
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if (!level.isClientSide()) {
             this.setFaction(this.getFaction(stack));
+            if (entity instanceof LivingEntity livingEntity) {
+                this.applyArmorEffects(livingEntity);
+            }
         }
 
         super.inventoryTick(stack, level, entity, slotId, isSelected);
+    }
+
+    private void applyArmorEffects(LivingEntity livingEntity) {
+        if (this.hasMarineHelmet(livingEntity)) {
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.CONDUIT_POWER, EFFECT_DURATION, 0, true, false, true));
+        }
+
+        if (this.isMarineArmor(livingEntity.getItemBySlot(EquipmentSlot.LEGS))) {
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, EFFECT_DURATION, 1, true, false, true));
+        }
+
+        if (this.isMarineArmor(livingEntity.getItemBySlot(EquipmentSlot.CHEST))) {
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, EFFECT_DURATION, 1, true, false, true));
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, EFFECT_DURATION, 1, true, false, true));
+        }
+
+        if (this.hasFullMarineSet(livingEntity)) {
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, EFFECT_DURATION, 0, true, false, true));
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, EFFECT_DURATION, 0, true, false, true));
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, EFFECT_DURATION, 1, true, false, true));
+            livingEntity.clearFire();
+            this.boostLavaMovement(livingEntity);
+        }
+    }
+
+    private void boostLavaMovement(LivingEntity livingEntity) {
+        if (!livingEntity.isInLava()) {
+            return;
+        }
+
+        Vec3 movement = livingEntity.getDeltaMovement();
+        double horizontalSpeed = Math.sqrt(movement.x * movement.x + movement.z * movement.z);
+        if (horizontalSpeed <= 0.0D || horizontalSpeed >= MAX_LAVA_HORIZONTAL_SPEED) {
+            return;
+        }
+
+        double boostedSpeed = Math.min(horizontalSpeed * LAVA_HORIZONTAL_BOOST, MAX_LAVA_HORIZONTAL_SPEED);
+        double scale = boostedSpeed / horizontalSpeed;
+        livingEntity.setDeltaMovement(movement.x * scale, movement.y, movement.z * scale);
+    }
+
+    public static boolean hasMarineHelmet(LivingEntity livingEntity) {
+        return isMarineArmor(livingEntity.getItemBySlot(EquipmentSlot.HEAD));
+    }
+
+    public static boolean hasMarineChestplate(LivingEntity livingEntity) {
+        return isMarineArmor(livingEntity.getItemBySlot(EquipmentSlot.CHEST));
+    }
+
+    public static boolean hasFullMarineSet(LivingEntity livingEntity) {
+        return isMarineArmor(livingEntity.getItemBySlot(EquipmentSlot.HEAD))
+                && isMarineArmor(livingEntity.getItemBySlot(EquipmentSlot.CHEST))
+                && isMarineArmor(livingEntity.getItemBySlot(EquipmentSlot.LEGS))
+                && isMarineArmor(livingEntity.getItemBySlot(EquipmentSlot.FEET));
+    }
+
+    public static boolean isMarineArmor(ItemStack stack) {
+        return stack.getItem() instanceof WarHammerArmorItem && !(stack.getItem() instanceof MarineShadesItem);
+    }
+
+    @Override
+    public boolean makesPiglinsNeutral(ItemStack stack, LivingEntity wearer) {
+        return this.getType() == Type.HELMET;
+    }
+
+    @Override
+    public boolean isEnderMask(ItemStack stack, Player player, EnderMan enderMan) {
+        return this.getType() == Type.HELMET;
+    }
+
+    @Override
+    public boolean canWalkOnPowderedSnow(ItemStack stack, LivingEntity wearer) {
+        return this.getType() == Type.BOOTS;
     }
 
     public Factions getFaction(ItemStack stack) {
