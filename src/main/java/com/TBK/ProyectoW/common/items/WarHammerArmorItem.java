@@ -103,13 +103,20 @@ public class WarHammerArmorItem extends ArmorItem implements GeoItem {
     }
 
     public void saveVisorColor(ItemStack stack, int color) {
-        CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putInt(VISOR_COLOR_TAG, color));
+        CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> {
+            tag.putInt(VISOR_COLOR_TAG, color);
+            tag.putString(VISOR_MATERIAL_TAG, getVisorMaterialForColor(color));
+        });
     }
 
     public String getVisorMaterial(ItemStack stack) {
         CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
         if (customData.contains(VISOR_MATERIAL_TAG)) {
             return customData.copyTag().getString(VISOR_MATERIAL_TAG);
+        }
+
+        if (customData.contains(VISOR_COLOR_TAG)) {
+            return getVisorMaterialForColor(customData.copyTag().getInt(VISOR_COLOR_TAG));
         }
 
         return "redstone";
@@ -172,6 +179,21 @@ public class WarHammerArmorItem extends ArmorItem implements GeoItem {
         }
 
         return DEFAULT_VISOR_COLOR;
+    }
+
+    private static String getVisorMaterialForColor(int color) {
+        return switch (color & 0x00FFFFFF) {
+            case 0xE6E6E6 -> "iron";
+            case 0xFF8A3D -> "copper";
+            case 0xFFD83D -> "gold";
+            case 0x305CFF -> "lapis";
+            case 0x24E36A -> "emerald";
+            case 0x55FFFF -> "diamond";
+            case 0x4A3F52 -> "netherite";
+            case 0xC06CFF -> "amethyst";
+            case 0xFFFFFF -> "quartz";
+            default -> "redstone";
+        };
     }
 
     @Override

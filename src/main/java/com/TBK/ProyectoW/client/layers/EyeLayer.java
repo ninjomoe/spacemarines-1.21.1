@@ -31,7 +31,8 @@ public class EyeLayer<T extends WarHammerArmorItem> extends ItemGeoRenderLayer<T
                 ResourceLocation texture = this.getTexture(stack);
                 RenderType eyeRenderType = RenderType.eyes(texture);
                 VertexConsumer consumer = bufferSource.getBuffer(eyeRenderType);
-                this.getRenderer().reRender(model, poseStack, bufferSource, animatable, eyeRenderType, consumer, partialTick, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
+                int visorColor = item instanceof WarHammerArmorItem armor ? armor.getVisorColor(stack) : WarHammerArmorItem.DEFAULT_VISOR_COLOR;
+                this.getRenderer().reRender(model, poseStack, bufferSource, animatable, eyeRenderType, consumer, partialTick, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, visorColor);
             }
         }
     }
