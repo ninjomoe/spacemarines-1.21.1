@@ -1,0 +1,7 @@
+{
+  "ingredient": "#minecraft:diamonds",
+  "item_model_dir": "space_marines:trim_items/silver_skull",
+  "template": "space_marines:silver_skull_trim_template",
+  "layer": "OVERLAY",
+  "overlay_texture": "space_marines:armor/golden_details/silver_skull"
+}

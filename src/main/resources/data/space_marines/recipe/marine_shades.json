@@ -1,0 +1,23 @@
+{
+  "type": "crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "space_marines:ceramite_ingot"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "GCG",
+    "I I"
+  ],
+  "result": {
+    "count": 1,
+    "id": "space_marines:marine_shades"
+  }
+}

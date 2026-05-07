@@ -1,0 +1,7 @@
+{
+  "ingredient": "#minecraft:gold_ingots",
+  "item_model_dir": "space_marines:trim_items/royal_zealot",
+  "template": "space_marines:royal_zealot_trim_template",
+  "layer": "OVERLAY",
+  "overlay_texture": "space_marines:armor/golden_details/royal_zealot"
+}

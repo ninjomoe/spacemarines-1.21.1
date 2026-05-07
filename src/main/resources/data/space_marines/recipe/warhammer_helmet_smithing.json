@@ -1,0 +1,16 @@
+{
+  "type": "space_marines:smithing_warhammer",
+  "addition": {
+    "item": "space_marines:ceramite_ingot"
+  },
+  "base": {
+    "item": "minecraft:netherite_helmet"
+  },
+  "result": {
+    "id": "space_marines:warhammer_helmet",
+    "count": 1
+  },
+  "template": {
+    "item": "space_marines:marine_armor_smithing_template"
+  }
+}

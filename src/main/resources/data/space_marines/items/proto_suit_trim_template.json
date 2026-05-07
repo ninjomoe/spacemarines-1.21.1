@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "space_marines:item/proto_suit_trim_template"
+  }
+}

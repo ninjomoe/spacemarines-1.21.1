@@ -1,0 +1,7 @@
+{
+  "ingredient": "#minecraft:iron_ingots",
+  "item_model_dir": "space_marines:trim_items/proto_suit",
+  "template": "space_marines:proto_suit_trim_template",
+  "layer": "OVERLAY",
+  "overlay_texture": "space_marines:armor/golden_details/proto_suit"
+}

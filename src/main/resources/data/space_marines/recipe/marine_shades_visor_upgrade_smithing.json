@@ -1,0 +1,12 @@
+{
+  "type": "space_marines:smithing_warhammer",
+  "addition": {
+    "tag": "minecraft:trim_materials"
+  },
+  "base": {
+    "item": "space_marines:marine_shades"
+  },
+  "template": {
+    "item": "space_marines:marine_visor_upgrade"
+  }
+}

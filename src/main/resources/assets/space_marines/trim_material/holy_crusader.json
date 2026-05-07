@@ -1,0 +1,7 @@
+{
+  "ingredient": "#minecraft:gold_ingots",
+  "item_model_dir": "space_marines:trim_items/holy_crusader",
+  "template": "space_marines:holy_crusader_trim_template",
+  "layer": "OVERLAY",
+  "overlay_texture": "space_marines:armor/golden_details/base"
+}

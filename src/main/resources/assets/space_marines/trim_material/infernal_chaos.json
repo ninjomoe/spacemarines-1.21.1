@@ -1,0 +1,7 @@
+{
+  "ingredient": "#minecraft:iron_ingots",
+  "item_model_dir": "space_marines:trim_items/infernal_chaos",
+  "template": "space_marines:infernal_chaos_trim_template",
+  "layer": "OVERLAY",
+  "overlay_texture": "space_marines:armor/golden_details/infernal_chaos"
+}

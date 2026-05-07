@@ -1,0 +1,12 @@
+{
+  "type": "space_marines:smithing_warhammer",
+  "addition": {
+    "item": "space_marines:ceramite_ingot"
+  },
+  "base": {
+    "tag": "space_marines:faction_armor"
+  },
+  "template": {
+    "item": "space_marines:royal_zealot_trim_template"
+  }
+}
