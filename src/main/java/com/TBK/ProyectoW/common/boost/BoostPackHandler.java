@@ -10,10 +10,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class BoostPackHandler {
-    public static final int MAX_BOOST_TICKS = 40;
+    public static final int MAX_BOOST_TICKS = 10;
     public static final double VERTICAL_ACCELERATION = 0.105D;
     public static final double WALK_AIR_ACCELERATION = 0.035D;
     public static final double SPRINT_AIR_ACCELERATION = 0.06D;
+    public static final double SPRINT_START_HORIZONTAL_IMPULSE = 0.34D;
+    public static final double SPRINT_START_VERTICAL_IMPULSE = 0.24D;
     private static final double MIN_VERTICAL_SPEED = 0.18D;
     private static final double MAX_VERTICAL_SPEED = 0.72D;
     private static final double WALK_MAX_HORIZONTAL_SPEED = 0.42D;
@@ -26,10 +28,14 @@ public class BoostPackHandler {
         }
 
         BoostState state = BOOST_STATES.computeIfAbsent(player.getUUID(), uuid -> new BoostState());
+        boolean wasActive = state.active;
         state.active = active && WarHammerArmorItem.hasMarineChestplate(player) && state.remainingTicks > 0;
         state.strafe = strafe;
         state.forward = forward;
         state.sprinting = sprinting;
+        if (state.active && !wasActive) {
+            state.startBoostPending = sprinting && forward > 0.0F;
+        }
     }
 
     public static void reset(Player player) {
@@ -90,6 +96,11 @@ public class BoostPackHandler {
             return;
         }
 
+        if (state.startBoostPending) {
+            player.addDeltaMovement(getSprintStartBoostDelta(player, state.strafe, state.forward));
+            state.startBoostPending = false;
+        }
+
         Vec3 boost = getBoostDelta(player, state.strafe, state.forward, state.sprinting);
         player.addDeltaMovement(boost);
         ensurePoweredLift(player);
@@ -105,6 +116,14 @@ public class BoostPackHandler {
     }
 
     public static Vec3 getBoostDelta(Player player, float strafeInput, float forwardInput, boolean sprinting) {
+        return getInputDirectedDelta(player, strafeInput, forwardInput, sprinting ? SPRINT_AIR_ACCELERATION : WALK_AIR_ACCELERATION, VERTICAL_ACCELERATION);
+    }
+
+    public static Vec3 getSprintStartBoostDelta(Player player, float strafeInput, float forwardInput) {
+        return getInputDirectedDelta(player, strafeInput, forwardInput, SPRINT_START_HORIZONTAL_IMPULSE, SPRINT_START_VERTICAL_IMPULSE);
+    }
+
+    private static Vec3 getInputDirectedDelta(Player player, float strafeInput, float forwardInput, double horizontalStrength, double verticalStrength) {
         double strafe = strafeInput;
         double forward = forwardInput;
         double inputLength = Math.sqrt(strafe * strafe + forward * forward);
@@ -114,15 +133,14 @@ public class BoostPackHandler {
         if (inputLength > 0.0D) {
             strafe /= inputLength;
             forward /= inputLength;
-            double acceleration = sprinting ? SPRINT_AIR_ACCELERATION : WALK_AIR_ACCELERATION;
             double yaw = Math.toRadians(player.getYRot());
             double sin = Math.sin(yaw);
             double cos = Math.cos(yaw);
-            x += (strafe * cos - forward * sin) * acceleration;
-            z += (forward * cos + strafe * sin) * acceleration;
+            x += (strafe * cos - forward * sin) * horizontalStrength;
+            z += (forward * cos + strafe * sin) * horizontalStrength;
         }
 
-        return new Vec3(x, VERTICAL_ACCELERATION, z);
+        return new Vec3(x, verticalStrength, z);
     }
 
     private static void limitVelocity(Player player, boolean sprinting) {
@@ -166,6 +184,7 @@ public class BoostPackHandler {
     private static class BoostState {
         private boolean active;
         private boolean sprinting;
+        private boolean startBoostPending;
         private float strafe;
         private float forward;
         private int remainingTicks = MAX_BOOST_TICKS;

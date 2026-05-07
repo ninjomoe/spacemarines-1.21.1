@@ -100,6 +100,10 @@ public class BoostPackClient {
         float forward = player == null ? 0.0F : player.zza;
         boolean sprinting = player != null && player.isSprinting();
         PacketDistributor.sendToServer(new BoostPackTogglePayload(boosting, strafe, forward, sprinting));
+        if (boosting && player != null && sprinting && forward > 0.0F) {
+            player.addDeltaMovement(BoostPackHandler.getSprintStartBoostDelta(player, strafe, forward).scale(0.6D));
+            player.fallDistance = 0.0F;
+        }
     }
 
     @SubscribeEvent
