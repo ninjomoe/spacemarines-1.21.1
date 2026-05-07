@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -76,6 +77,9 @@ public class BoostPackClient {
 
         if (sentBoosting && clientBoostTicks > 0) {
             PacketDistributor.sendToServer(new BoostPackTogglePayload(true, player.xxa, player.zza, player.isSprinting()));
+            Vec3 boost = BoostPackHandler.getBoostDelta(player, player.xxa, player.zza, player.isSprinting());
+            player.addDeltaMovement(boost.scale(0.6D));
+            player.fallDistance = 0.0F;
             clientBoostTicks--;
             if (clientBoostTicks <= 0) {
                 setBoosting(false);

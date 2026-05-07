@@ -11,10 +11,11 @@ import net.minecraft.world.phys.Vec3;
 
 public class BoostPackHandler {
     public static final int MAX_BOOST_TICKS = 40;
-    private static final double VERTICAL_ACCELERATION = 0.075D;
-    private static final double MAX_VERTICAL_SPEED = 0.48D;
-    private static final double WALK_AIR_ACCELERATION = 0.04D;
-    private static final double SPRINT_AIR_ACCELERATION = 0.07D;
+    public static final double VERTICAL_ACCELERATION = 0.105D;
+    public static final double WALK_AIR_ACCELERATION = 0.035D;
+    public static final double SPRINT_AIR_ACCELERATION = 0.06D;
+    private static final double MIN_VERTICAL_SPEED = 0.18D;
+    private static final double MAX_VERTICAL_SPEED = 0.72D;
     private static final double WALK_MAX_HORIZONTAL_SPEED = 0.42D;
     private static final double SPRINT_MAX_HORIZONTAL_SPEED = 0.70D;
     private static final Map<UUID, BoostState> BOOST_STATES = new HashMap<>();
@@ -89,8 +90,10 @@ public class BoostPackHandler {
             return;
         }
 
-        Vec3 movement = applyBoostMovement(player, player.getDeltaMovement(), state);
-        player.setDeltaMovement(movement);
+        Vec3 boost = getBoostDelta(player, state.strafe, state.forward, state.sprinting);
+        player.addDeltaMovement(boost);
+        ensurePoweredLift(player);
+        limitVelocity(player, state.sprinting);
         player.hurtMarked = true;
         player.fallDistance = 0.0F;
         spawnBoostParticles(player);
@@ -101,18 +104,17 @@ public class BoostPackHandler {
         }
     }
 
-    private static Vec3 applyBoostMovement(Player player, Vec3 movement, BoostState state) {
-        double strafe = state.strafe;
-        double forward = state.forward;
+    public static Vec3 getBoostDelta(Player player, float strafeInput, float forwardInput, boolean sprinting) {
+        double strafe = strafeInput;
+        double forward = forwardInput;
         double inputLength = Math.sqrt(strafe * strafe + forward * forward);
-        double x = movement.x;
-        double z = movement.z;
+        double x = 0.0D;
+        double z = 0.0D;
 
-        double maxHorizontalSpeed = state.sprinting ? SPRINT_MAX_HORIZONTAL_SPEED : WALK_MAX_HORIZONTAL_SPEED;
         if (inputLength > 0.0D) {
             strafe /= inputLength;
             forward /= inputLength;
-            double acceleration = state.sprinting ? SPRINT_AIR_ACCELERATION : WALK_AIR_ACCELERATION;
+            double acceleration = sprinting ? SPRINT_AIR_ACCELERATION : WALK_AIR_ACCELERATION;
             double yaw = Math.toRadians(player.getYRot());
             double sin = Math.sin(yaw);
             double cos = Math.cos(yaw);
@@ -120,6 +122,14 @@ public class BoostPackHandler {
             z += (forward * cos + strafe * sin) * acceleration;
         }
 
+        return new Vec3(x, VERTICAL_ACCELERATION, z);
+    }
+
+    private static void limitVelocity(Player player, boolean sprinting) {
+        Vec3 movement = player.getDeltaMovement();
+        double x = movement.x;
+        double z = movement.z;
+        double maxHorizontalSpeed = sprinting ? SPRINT_MAX_HORIZONTAL_SPEED : WALK_MAX_HORIZONTAL_SPEED;
         double horizontalSpeed = Math.sqrt(x * x + z * z);
         if (horizontalSpeed > maxHorizontalSpeed) {
             double scale = maxHorizontalSpeed / horizontalSpeed;
@@ -127,8 +137,17 @@ public class BoostPackHandler {
             z *= scale;
         }
 
-        double y = Math.min(movement.y + VERTICAL_ACCELERATION, MAX_VERTICAL_SPEED);
-        return new Vec3(x, y, z);
+        double y = Math.min(movement.y, MAX_VERTICAL_SPEED);
+        if (x != movement.x || y != movement.y || z != movement.z) {
+            player.setDeltaMovement(x, y, z);
+        }
+    }
+
+    private static void ensurePoweredLift(Player player) {
+        Vec3 movement = player.getDeltaMovement();
+        if (movement.y < MIN_VERTICAL_SPEED) {
+            player.setDeltaMovement(movement.x, MIN_VERTICAL_SPEED, movement.z);
+        }
     }
 
     private static void spawnBoostParticles(Player player) {
