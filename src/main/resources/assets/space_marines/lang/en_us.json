@@ -2,7 +2,7 @@
   "item.space_marines.warhammer_helmet": "Marine Helmet",
   "item.space_marines.warhammer_chest": "Marine Chestplate",
   "item.space_marines.warhammer_leggings": "Marine Leggings",
-  "item.space_marines.warhammer_boot": "Marine Boots",
+  "item.space_marines.warhammer_boots": "Marine Boots",
   "item.space_marines.marine_shades": "Marine Shades",
   "item.space_marines.marine_shades_low": "Marine Shades Low",
 
@@ -20,6 +20,7 @@
   "key.space_marines.boost_pack": "Toggle Boost Pack",
 
   "itemGroup.warhammer_tab": "Space Marines",
+  "tag.item.space_marines.faction_armor": "Faction Armor",
   "factions.decrip": "Trim:",
   "factions.ROYAL_ZEALOT": "Royal Zealot",
   "factions.SILVER_SKULL": "Silver Skulls",
