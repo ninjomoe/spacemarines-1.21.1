@@ -1,25 +1,33 @@
+# Space Marines
 
-Installation information
-=======
+A NeoForge 1.21.1 Minecraft mod that adds Space Marine-inspired armor, shades, materials, and upgrade recipes.
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+## Features
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
+- Full Marine armor set made from upgraded netherite armor and ceramite.
+- Marine Helmet, Chestplate, Leggings, and Boots with custom models and textures.
+- Armor effects while worn, including movement, strength, haste, regeneration, fire resistance, resistance, conduit power, and night vision depending on equipped pieces.
+- Marine Shades and Low Marine Shades, with night vision while worn.
+- Simple shade conversion recipes to swap between low and high shades.
+- Custom visor upgrades using smithing recipes and trim materials.
+- Multiple faction/trim styles, including Holy Crusader, Royal Zealot, Silver Skulls, Prototype MK II, and Infernal Chaos.
+- Dyeable armor support.
+- Enchantable armor and shades.
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
+## Build
 
-Mapping Names:
-============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
+```powershell
+.\gradlew.bat build
+```
 
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+The built mod jar will be in:
+
+```text
+build/libs/
+```
+
+## Requirements
+
+- Minecraft 1.21.1
+- NeoForge
+- GeckoLib
